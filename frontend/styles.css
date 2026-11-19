@@ -1,140 +1,276 @@
-/* AirInsight Premium UI Styling
- * Inspired by modern design systems (Linear, Apple Weather, Stripe)
+/* AirInsight Ultra-Premium Glassmorphism & Atmospheric Animation System
+ * Inspired by Alto Origins (Volcán de Agua) mountain atmosphere & modern luxury UI
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
   --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Space Grotesk', var(--font-main);
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* Atmospheric Sky Palette */
+  --sky-top: #a5c4d4;
+  --sky-mid: #cfdce6;
+  --sky-bottom: #e8ecf0;
   
-  --bg-gradient: radial-gradient(130% 90% at 50% 0%, rgba(14, 165, 233, 0.08) 0%, rgba(248, 250, 252, 1) 75%);
-  --card-bg: rgba(255, 255, 255, 0.85);
-  --card-border: rgba(226, 232, 240, 0.8);
-  --glass-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
-  --hover-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.08), 0 10px 15px -5px rgba(15, 23, 42, 0.03);
+  /* Glassmorphism Specs */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-bg-hover: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --glass-border-subtle: rgba(226, 232, 240, 0.6);
+  --glass-shadow: 0 16px 40px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.6);
+  --glass-inner-bevel: inset 0 1px 1px 0 rgba(255, 255, 255, 0.85);
+
+  --accent-color: #0284c7;
 }
 
 body {
   font-family: var(--font-main);
-  background: var(--bg-gradient);
-  background-attachment: fixed;
   color: #0f172a;
   min-height: 100vh;
+  background-color: #f1f5f9;
+  overflow-x: hidden;
 }
 
-/* Glassmorphism Card Elements */
+/* ========================================================================= */
+/* 1. ATMOSPHERIC SCENIC HERO & CLOUD DRIFT ANIMATIONS                       */
+/* ========================================================================= */
+.atmospheric-hero-stage {
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+  border-radius: 2rem;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bottom) 100%);
+  transition: background 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Background Mountain Silhouette */
+.mountain-silhouette {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1100px;
+  height: 480px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" preserveAspectRatio="none"><path d="M600,70 L880,550 L1200,600 L0,600 L320,550 Z" fill="%232c433b" opacity="0.82"/><path d="M600,70 L720,240 L650,290 L750,420 L880,550 L600,600 L320,550 L450,420 L550,290 L480,240 Z" fill="%233e5c52" opacity="0.5"/><path d="M600,70 L620,130 L580,180 L630,220 L600,280 L560,240 L590,190 L580,120 Z" fill="%23c28b62" opacity="0.75"/></svg>');
+  background-size: cover;
+  background-position: bottom center;
+  pointer-events: none;
+  z-index: 2;
+  filter: contrast(1.05) saturate(0.9);
+}
+
+/* Animated Cloud Layer Base */
+.cloud-layer {
+  position: absolute;
+  width: 250%;
+  height: 100%;
+  pointer-events: none;
+  background-repeat: repeat-x;
+  background-size: contain;
+}
+
+/* Cloud Band 1 (Back Layer, slow drift) */
+.cloud-band-back {
+  top: 15%;
+  left: -20%;
+  height: 180px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 200"><path d="M50,150 Q120,80 220,110 Q320,40 450,90 Q580,20 720,80 Q850,50 950,120 Q1050,160 900,180 Q650,200 400,190 Q150,195 50,150 Z" fill="white" opacity="0.65" filter="blur(8px)"/></svg>');
+  animation: driftRight 45s linear infinite;
+  z-index: 1;
+}
+
+/* Cloud Band 2 (Mid Layer, passing across mountain and typography) */
+.cloud-band-mid {
+  top: 38%;
+  left: 0;
+  height: 220px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 220"><path d="M0,130 Q100,60 250,90 Q400,10 580,70 Q750,20 900,70 Q1050,40 1200,110 L1200,200 Q950,220 600,210 Q250,220 0,180 Z" fill="white" opacity="0.85" filter="blur(5px)"/></svg>');
+  animation: driftLeft 32s linear infinite;
+  z-index: 4;
+}
+
+/* Cloud Band 3 (Foreground Wisps, fast and soft) */
+.cloud-band-front {
+  bottom: 0;
+  left: -10%;
+  height: 190px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 190"><path d="M0,110 Q140,40 320,80 Q500,20 700,70 Q900,30 1100,90 L1100,190 L0,190 Z" fill="white" opacity="0.95" filter="blur(4px)"/></svg>');
+  animation: driftRight 22s linear infinite;
+  z-index: 6;
+}
+
+@keyframes driftRight {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(33.33%); }
+}
+
+@keyframes driftLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33%); }
+}
+
+/* Bold Editorial Typography Layer */
+.hero-city-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: #ffffff;
+  text-shadow: 0 4px 20px rgba(15, 23, 42, 0.25), 0 1px 3px rgba(15, 23, 42, 0.3);
+  z-index: 3;
+  user-select: none;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ========================================================================= */
+/* 2. VERTICAL ATMOSPHERIC SCALE RULER (ALTO VIDEO STYLE)                    */
+/* ========================================================================= */
+.vertical-scale-container {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  color: #0f172a;
+  z-index: 10;
+  user-select: none;
+}
+
+.ruler-track {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 180px;
+  width: 14px;
+  position: relative;
+}
+
+.ruler-tick {
+  width: 10px;
+  height: 1.5px;
+  background: rgba(15, 23, 42, 0.35);
+  border-radius: 1px;
+}
+
+.ruler-tick.major {
+  width: 16px;
+  height: 2px;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.ruler-indicator-needle {
+  position: absolute;
+  right: -8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0284c7;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25);
+  transition: top 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scale-meta-text {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.7);
+  line-height: 1.5;
+}
+
+/* ========================================================================= */
+/* 3. ULTRA-POLISHED GLASSMORPHISM COMPONENTS                                */
+/* ========================================================================= */
 .glass-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--card-border);
-  border-radius: 1.25rem;
-  box-shadow: var(--glass-shadow);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--glass-bg);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-inner-bevel);
+  border-radius: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(186, 230, 253, 0.8);
-  box-shadow: var(--hover-shadow);
+  background: var(--glass-bg-hover);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12), var(--glass-inner-bevel);
+  transform: translateY(-2px);
 }
 
-/* Ambient Radial Glow around hero container */
-.hero-ambient-glow {
-  position: absolute;
-  top: -120px;
-  right: -80px;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--glow-color, rgba(16, 185, 129, 0.2)) 0%, transparent 70%);
-  filter: blur(50px);
-  pointer-events: none;
-  z-index: 0;
-  transition: background 0.8s ease;
-}
-
-/* Gauge Arc Animations */
-.gauge-svg path {
-  transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.6s ease;
-}
-
-/* Pulse Glow Effects */
-.pulse-emerald {
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
-  animation: pulse-emerald 2s infinite;
-}
-@keyframes pulse-emerald {
-  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-  70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-}
-
-/* Pill Badges */
-.badge-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
+/* Glass Pill Elements */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.9);
   border-radius: 9999px;
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: -0.01em;
+  transition: all 0.2s ease;
 }
 
-/* Modern Range Slider Styling */
+.glass-pill:hover {
+  background: #ffffff;
+  border-color: rgba(2, 132, 199, 0.4);
+  color: #0284c7;
+  transform: scale(1.03);
+}
+
+/* Glass Navbar */
+.glass-dock {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+}
+
+/* Radial SVG Gauge Meter */
+.gauge-svg path {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.6s ease;
+}
+
+/* Custom Sliders */
 input[type="range"] {
   -webkit-appearance: none;
   height: 6px;
-  background: #e2e8f0;
+  background: rgba(226, 232, 240, 0.9);
   border-radius: 9999px;
   outline: none;
-  transition: background 0.2s;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background: #0284c7;
   border: 3px solid #ffffff;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
   transition: transform 0.15s ease, background-color 0.15s;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.25);
   background: #0369a1;
 }
 
-/* Code & Dev Typography */
+/* Code & Dev Monospace */
 .font-mono-code {
   font-family: var(--font-mono);
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+/* Smooth Tab Transitions */
+.tab-content {
+  animation: stageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Smooth Tab transitions */
-.tab-content {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes stageEnter {
+  from { opacity: 0; transform: translateY(10px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }

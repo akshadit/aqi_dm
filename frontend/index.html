@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AirInsight | Smart Air Quality Intelligence & Data Mining</title>
+  <title>AirInsight | Atmospheric Intelligence & Air Quality Mining</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,62 +18,60 @@
 <body class="antialiased selection:bg-sky-500 selection:text-white flex flex-col min-h-screen">
 
   <!-- ========================================================================= -->
-  <!-- FLOATING NAVBAR (BLURRED DOCK HEADER)                                     -->
+  <!-- FLOATING FROSTED GLASS DOCK HEADER                                        -->
   <!-- ========================================================================= -->
-  <header class="sticky top-0 z-40 bg-white/70 backdrop-blur-md border-b border-slate-200/80 transition-all">
+  <header class="sticky top-0 z-50 glass-dock transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       
-      <!-- Logo Branding -->
+      <!-- Brand Logo -->
       <div class="flex items-center space-x-3 cursor-pointer group" onclick="setAppMode('consumer')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-sky-500 to-teal-400 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-600 via-sky-500 to-teal-400 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
           <i data-lucide="wind" class="w-5 h-5"></i>
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <span class="text-lg font-extrabold tracking-tight text-slate-900">AirInsight</span>
-            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-lg font-black tracking-tight text-slate-900 font-display">AirInsight</span>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
               Live
             </span>
           </div>
-          <p class="text-[11px] text-slate-400 font-medium">Environmental AI & Pattern Mining</p>
+          <p class="text-[11px] text-slate-400 font-medium">Atmospheric Pattern Mining</p>
         </div>
       </div>
 
-      <!-- Quick Location Search Bar -->
+      <!-- Center Search -->
       <div class="flex-1 max-w-md hidden md:block">
         <div class="relative">
           <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
           <input type="text" id="quick-city-search" 
                  placeholder="Search city e.g. Delhi, London, Tokyo (Press Enter)..." 
                  onkeydown="if(event.key === 'Enter') handleSearchEnter()"
-                 class="w-full pl-10 pr-24 py-2 bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-sky-400 rounded-xl text-xs text-slate-800 focus:outline-none transition-all placeholder:text-slate-400">
-          <kbd class="absolute right-3 top-2.5 text-[10px] font-mono text-slate-400 bg-white px-1.5 py-0.5 rounded border border-slate-200 shadow-2xs">Enter ↵</kbd>
+                 class="w-full pl-10 pr-24 py-2 bg-slate-100/70 hover:bg-white focus:bg-white border border-slate-200/80 focus:border-sky-400 rounded-2xl text-xs text-slate-800 focus:outline-none transition-all placeholder:text-slate-400 shadow-inner">
+          <kbd class="absolute right-3 top-2.5 text-[10px] font-mono text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-2xs">Enter ↵</kbd>
         </div>
       </div>
 
       <!-- Action Pill & Mode Switcher -->
       <div class="flex items-center space-x-2.5">
-        <!-- City Dropdown -->
-        <select id="city-selector" onchange="onCityChange()" class="bg-white border border-slate-200 text-slate-800 text-xs font-semibold rounded-xl px-3 py-2 shadow-2xs focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer">
-          <!-- Dynamically populated -->
+        <select id="city-selector" onchange="onCityChange()" class="glass-pill px-3.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer">
+          <!-- Populated dynamically -->
         </select>
 
-        <!-- Live Sync Button -->
         <button onclick="triggerIngestCurrentCity()" id="btn-fetch-live" title="Sync Live Satellite API Telemetry" 
-                class="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-sky-600 hover:border-sky-300 shadow-2xs transition-all active:scale-95">
+                class="glass-pill p-2 text-slate-600 hover:text-sky-600 shadow-2xs transition-all active:scale-95">
           <i data-lucide="refresh-cw" class="w-4 h-4"></i>
         </button>
 
-        <!-- Mode Toggle (Consumer vs Dev/Viva Mode) -->
-        <div class="flex items-center bg-slate-200/70 p-1 rounded-xl">
-          <button id="btn-mode-consumer" onclick="setAppMode('consumer')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-2xs transition-all">
-            <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-sky-600"></i>
-            <span class="hidden sm:inline">Consumer</span>
+        <!-- Mode Toggle Pill -->
+        <div class="flex items-center bg-slate-200/60 p-1 rounded-2xl backdrop-blur-md">
+          <button id="btn-mode-consumer" onclick="setAppMode('consumer')" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition-all">
+            <i data-lucide="mountain-snow" class="w-3.5 h-3.5 text-sky-600"></i>
+            <span class="hidden sm:inline">Atmosphere</span>
           </button>
-          <button id="btn-mode-dev" onclick="setAppMode('dev')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
+          <button id="btn-mode-dev" onclick="setAppMode('dev')" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
             <i data-lucide="terminal" class="w-3.5 h-3.5 text-purple-600"></i>
-            <span>🔬 Viva Lab</span>
+            <span>🔬 Viva Studio</span>
           </button>
         </div>
       </div>
@@ -83,191 +81,262 @@
 
   <!-- Quick City Pills Row -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2 w-full overflow-x-auto flex items-center space-x-2 text-xs">
-    <span class="text-slate-400 font-semibold uppercase text-[10px] tracking-wider shrink-0 mr-1">Quick Picks:</span>
-    <button onclick="selectQuickCity('Bengaluru')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-sky-400 hover:text-sky-600 font-medium transition-all shrink-0">Bengaluru</button>
-    <button onclick="selectQuickCity('Delhi')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-sky-400 hover:text-sky-600 font-medium transition-all shrink-0">Delhi</button>
-    <button onclick="selectQuickCity('Mumbai')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-sky-400 hover:text-sky-600 font-medium transition-all shrink-0">Mumbai</button>
-    <button onclick="selectQuickCity('Chennai')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-sky-400 hover:text-sky-600 font-medium transition-all shrink-0">Chennai</button>
-    <button onclick="selectQuickCity('Hyderabad')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-sky-400 hover:text-sky-600 font-medium transition-all shrink-0">Hyderabad</button>
-    <button onclick="selectQuickCity('Kolkata')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-sky-400 hover:text-sky-600 font-medium transition-all shrink-0">Kolkata</button>
+    <span class="text-slate-400 font-bold uppercase text-[10px] tracking-wider shrink-0 mr-1">Locations:</span>
+    <button onclick="selectQuickCity('Bengaluru')" class="glass-pill px-3 py-1 text-slate-700 font-semibold shrink-0">Bengaluru</button>
+    <button onclick="selectQuickCity('Delhi')" class="glass-pill px-3 py-1 text-slate-700 font-semibold shrink-0">Delhi</button>
+    <button onclick="selectQuickCity('Mumbai')" class="glass-pill px-3 py-1 text-slate-700 font-semibold shrink-0">Mumbai</button>
+    <button onclick="selectQuickCity('Chennai')" class="glass-pill px-3 py-1 text-slate-700 font-semibold shrink-0">Chennai</button>
+    <button onclick="selectQuickCity('Hyderabad')" class="glass-pill px-3 py-1 text-slate-700 font-semibold shrink-0">Hyderabad</button>
+    <button onclick="selectQuickCity('Kolkata')" class="glass-pill px-3 py-1 text-slate-700 font-semibold shrink-0">Kolkata</button>
+    <button onclick="selectQuickCity('London')" class="glass-pill px-3 py-1 text-slate-700 font-semibold shrink-0">London</button>
+    <button onclick="selectQuickCity('Tokyo')" class="glass-pill px-3 py-1 text-slate-700 font-semibold shrink-0">Tokyo</button>
   </div>
 
   <!-- Toast Notification Container -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-50 pointer-events-none flex flex-col space-y-2"></div>
 
   <!-- ========================================================================= -->
-  <!-- 1. CONSUMER MODE (CLEAN, MINIMAL, PERSON-FOCUSED AIR QUALITY INTELLIGENCE)  -->
+  <!-- 1. CONSUMER MODE (ATMOSPHERIC SCENIC HERO WITH LIVING CLOUDS & GLASS CARDS)-->
   <!-- ========================================================================= -->
   <main id="mode-consumer-container" class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4 space-y-6 flex-1 tab-content">
 
-    <!-- HERO SECTION: RADIAL GAUGE & HEALTH VERDICT -->
-    <div class="glass-card p-6 sm:p-8 relative overflow-hidden" id="hero-main-card">
-      <div class="hero-ambient-glow" id="hero-ambient-glow"></div>
+    <!-- ======================================================= -->
+    <!-- HERO STAGE: LIVING CLOUD DRIFT & EDITORIAL TYPOGRAPHY    -->
+    <!-- ======================================================= -->
+    <div class="atmospheric-hero-stage p-8 sm:p-12 flex flex-col justify-between relative" id="hero-stage">
+      
+      <!-- Layer 1: Background Cloud Band -->
+      <div class="cloud-layer cloud-band-back"></div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-        
-        <!-- Left Column: Location, Big Gauge & AQI Metric -->
-        <div class="lg:col-span-7 space-y-5">
-          <div class="flex items-center space-x-2 text-slate-500 text-xs">
-            <span class="inline-flex items-center gap-1 font-semibold text-slate-800 text-sm bg-slate-100 px-2.5 py-1 rounded-lg">
-              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-500"></i>
-              <span id="hero-city-name">--</span>
-            </span>
-            <span>•</span>
-            <span id="hero-timestamp" class="text-slate-400 font-mono text-[11px]">Synced: Live UTC</span>
-          </div>
+      <!-- Layer 2: Mountain Silhouette -->
+      <div class="mountain-silhouette"></div>
 
-          <!-- Gauge and Number Row -->
-          <div class="flex items-center space-x-6 sm:space-x-8">
-            
-            <!-- Radial SVG Gauge Meter -->
-            <div class="relative w-32 h-32 sm:w-36 sm:h-36 flex items-center justify-center shrink-0">
-              <svg class="w-full h-full transform -rotate-90 gauge-svg" viewBox="0 0 100 100">
-                <!-- Background Track -->
-                <circle cx="50" cy="50" r="40" stroke="#f1f5f9" stroke-width="9" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="0" stroke-linecap="round"></circle>
-                <!-- Animated Progress Arc -->
-                <circle id="gauge-circle-progress" cx="50" cy="50" r="40" stroke="#10b981" stroke-width="9" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="150" stroke-linecap="round"></circle>
-              </svg>
-              <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">US AQI</span>
-                <span class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-none" id="hero-aqi-val">--</span>
-              </div>
-            </div>
-
-            <!-- Health Status & Verdict Text -->
-            <div class="space-y-1.5">
-              <div class="inline-flex items-center gap-1.5 badge-pill bg-emerald-100 text-emerald-800 border border-emerald-200" id="hero-tier-badge">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span id="hero-tier-text">Good Air Quality</span>
-              </div>
-              <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight" id="hero-headline">Clean Ambient Breathing Air</h3>
-              <p class="text-xs text-slate-500 max-w-sm leading-relaxed" id="hero-short-summary">
-                Pollution concentrations pose little or no health risk to the population.
-              </p>
-            </div>
-
-          </div>
-
-          <!-- Primary Pollutant Highlight Box -->
-          <div class="flex items-center space-x-3 bg-slate-50/80 p-3 rounded-xl border border-slate-200/80 text-xs">
-            <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center font-bold shrink-0">
-              <i data-lucide="info" class="w-4 h-4"></i>
-            </div>
-            <div class="flex-1">
-              <span class="font-bold text-slate-800" id="primary-pollutant-title">Primary Pollutant: PM2.5 (Fine Combustion Particles)</span>
-              <p class="text-[11px] text-slate-500" id="primary-pollutant-desc">Fine particles can penetrate deep into lungs and cardiovascular systems.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column: Interactive Lifestyle Guidance Card -->
-        <div class="lg:col-span-5 bg-white/90 backdrop-blur-md p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div class="flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
-                <i data-lucide="heart" class="w-4 h-4"></i>
-              </div>
-              <h4 class="font-bold text-sm text-slate-800">Health & Activity Guidance</h4>
-            </div>
-            <span class="text-[11px] text-slate-400 font-medium">WHO Guidelines</span>
-          </div>
-
-          <p class="text-xs text-slate-600 leading-relaxed font-medium" id="hero-advisory-text">
-            Air quality is satisfactory. It is a great time to enjoy outdoor sports and open windows for ventilation.
-          </p>
-
-          <!-- 4 Visual Activity Indicator Badges -->
-          <div class="grid grid-cols-2 gap-2.5 pt-1 text-xs">
-            <div id="badge-outdoor" class="p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-100 flex items-center space-x-2.5">
-              <i data-lucide="bike" class="w-5 h-5 text-emerald-600 shrink-0"></i>
-              <div>
-                <span class="font-bold block text-[11px]">Outdoor Sports</span>
-                <span class="text-[10px] text-emerald-600 font-medium" id="badge-outdoor-text">Safe & Recommended</span>
-              </div>
-            </div>
-
-            <div id="badge-windows" class="p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-100 flex items-center space-x-2.5">
-              <i data-lucide="door-open" class="w-5 h-5 text-emerald-600 shrink-0"></i>
-              <div>
-                <span class="font-bold block text-[11px]">Windows / Fresh Air</span>
-                <span class="text-[10px] text-emerald-600 font-medium" id="badge-windows-text">Open for Airflow</span>
-              </div>
-            </div>
-
-            <div id="badge-mask" class="p-3 rounded-xl bg-slate-50 text-slate-600 border border-slate-200 flex items-center space-x-2.5">
-              <i data-lucide="shield" class="w-5 h-5 text-slate-400 shrink-0"></i>
-              <div>
-                <span class="font-bold block text-[11px]">Face Mask (N95)</span>
-                <span class="text-[10px] text-slate-500 font-medium" id="badge-mask-text">Not Needed</span>
-              </div>
-            </div>
-
-            <div id="badge-purifier" class="p-3 rounded-xl bg-slate-50 text-slate-600 border border-slate-200 flex items-center space-x-2.5">
-              <i data-lucide="fan" class="w-5 h-5 text-slate-400 shrink-0"></i>
-              <div>
-                <span class="font-bold block text-[11px]">Air Purifier</span>
-                <span class="text-[10px] text-slate-500 font-medium" id="badge-purifier-text">Can Remain Idle</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <!-- Layer 3: Editorial City Typography (Layered with clouds) -->
+      <div class="relative z-30 my-auto text-center sm:text-left pt-6 pb-4">
+        <span class="text-xs uppercase tracking-widest font-mono text-white/80 font-bold px-3 py-1 rounded-full bg-black/15 backdrop-blur-md inline-block mb-2" id="hero-state-country">
+          INDIA • MONITORED ZONE
+        </span>
+        <h1 class="hero-city-title tracking-tight" id="hero-city-name-display">
+          Bengaluru
+        </h1>
+        <p class="text-xs sm:text-sm font-medium text-white/90 max-w-md drop-shadow-md mt-1" id="hero-tagline">
+          Real-time atmospheric telemetry and dispersion pattern observation.
+        </p>
       </div>
 
-      <!-- 6 Chemical Pollutants Strip -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mt-8 pt-6 border-t border-slate-100">
-        <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 hover:bg-white hover:shadow-xs transition-all text-center">
-          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">PM2.5</p>
-          <p class="text-base font-extrabold text-slate-900 mt-0.5"><span id="pill-pm25">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
-          <span class="text-[10px] text-slate-400">Combustion Soot</span>
+      <!-- Layer 4: Midground Cloud Band drifting in front of Typography -->
+      <div class="cloud-layer cloud-band-mid"></div>
+
+      <!-- Layer 5: Vertical Elevation / AQI Scale (Alto Video Style) on Right -->
+      <div class="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 vertical-scale-container hidden md:flex">
+        <div class="text-right scale-meta-text">
+          <span class="block font-bold text-slate-800 text-xs">500 AQI</span>
+          <span class="block text-[10px] text-slate-500">HAZARDOUS</span>
+          <span class="block font-bold text-slate-800 text-xs mt-8" id="scale-current-aqi">142 AQI</span>
+          <span class="block text-[10px] text-slate-600" id="scale-city-name">BENGALURU</span>
+          <span class="block text-[9px] text-slate-400 font-mono" id="scale-coords">12.97° N 77.59° E</span>
+          <span class="block font-bold text-slate-800 text-xs mt-8">0 AQI</span>
+          <span class="block text-[10px] text-slate-500">PURE AIR</span>
         </div>
-        <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 hover:bg-white hover:shadow-xs transition-all text-center">
-          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">PM10</p>
-          <p class="text-base font-extrabold text-slate-900 mt-0.5"><span id="pill-pm10">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
-          <span class="text-[10px] text-slate-400">Road Dust</span>
+
+        <div class="ruler-track">
+          <div class="ruler-tick major"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick major"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick major"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick"></div>
+          <div class="ruler-tick major"></div>
+          <!-- Animated Active Indicator Needle -->
+          <div class="ruler-indicator-needle" id="scale-needle" style="top: 45%;"></div>
         </div>
-        <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 hover:bg-white hover:shadow-xs transition-all text-center">
-          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">NO₂</p>
-          <p class="text-base font-extrabold text-slate-900 mt-0.5"><span id="pill-no2">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
-          <span class="text-[10px] text-slate-400">Traffic Exhaust</span>
+      </div>
+
+      <!-- Layer 6: Foreground Wisps -->
+      <div class="cloud-layer cloud-band-front"></div>
+
+      <!-- Bottom Stage Status Bar -->
+      <div class="relative z-40 flex flex-col sm:flex-row items-center justify-between text-xs text-white/90 font-medium gap-2 pt-4">
+        <div class="flex items-center space-x-2 bg-black/20 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="hero-timestamp">Satellite Telemetry Synced: Live UTC</span>
         </div>
-        <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 hover:bg-white hover:shadow-xs transition-all text-center">
-          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">SO₂</p>
-          <p class="text-base font-extrabold text-slate-900 mt-0.5"><span id="pill-so2">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
-          <span class="text-[10px] text-slate-400">Industrial Smoke</span>
+        <span class="font-mono text-[11px] tracking-widest uppercase text-white/80 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
+          SCROLL TO EXPLORE DATA
+        </span>
+      </div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- GLASSMORPHISM CARDS: VERDICTS, GAUGE & ACTIVITIES        -->
+    <!-- ======================================================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      
+      <!-- Primary Air Quality Glass Gauge Card -->
+      <div class="lg:col-span-7 glass-card p-6 sm:p-8 flex flex-col justify-between space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100/80 pb-4">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse"></span>
+            <h3 class="font-extrabold text-sm text-slate-800 uppercase tracking-wider">Air Quality Diagnostics</h3>
+          </div>
+          <div class="glass-pill px-3 py-1 text-xs font-bold" id="hero-tier-badge">
+            <span id="hero-tier-text">Moderate</span>
+          </div>
         </div>
-        <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 hover:bg-white hover:shadow-xs transition-all text-center">
-          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">CO</p>
-          <p class="text-base font-extrabold text-slate-900 mt-0.5"><span id="pill-co">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
-          <span class="text-[10px] text-slate-400">Carbon Monoxide</span>
+
+        <!-- Gauge & Headline -->
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <!-- Radial Animated SVG Gauge -->
+          <div class="relative w-36 h-36 flex items-center justify-center shrink-0">
+            <svg class="w-full h-full transform -rotate-90 gauge-svg" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" stroke="rgba(226, 232, 240, 0.7)" stroke-width="8" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="0" stroke-linecap="round"></circle>
+              <circle id="gauge-circle-progress" cx="50" cy="50" r="40" stroke="#0284c7" stroke-width="8" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="140" stroke-linecap="round"></circle>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">US AQI</span>
+              <span class="text-4xl font-black text-slate-900 tracking-tight leading-none" id="hero-aqi-val">--</span>
+              <span class="text-[9px] font-bold text-slate-400 mt-1 uppercase" id="hero-aqi-sub">INDEX</span>
+            </div>
+          </div>
+
+          <div class="space-y-2 text-center sm:text-left">
+            <h4 class="text-2xl font-black text-slate-900 tracking-tight" id="hero-headline">Clean Ambient Breathing Air</h4>
+            <p class="text-xs text-slate-600 leading-relaxed font-medium" id="hero-short-summary">
+              Pollution concentrations pose little or no health risk to the population.
+            </p>
+            <p class="text-xs text-slate-500 leading-relaxed pt-1" id="hero-advisory-text">
+              Air quality is satisfactory. It is a great time to enjoy outdoor sports and open windows for ventilation.
+            </p>
+          </div>
         </div>
-        <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 hover:bg-white hover:shadow-xs transition-all text-center">
-          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Ozone (O₃)</p>
-          <p class="text-base font-extrabold text-slate-900 mt-0.5"><span id="pill-o3">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
-          <span class="text-[10px] text-slate-400">Photochem Smog</span>
+
+        <!-- Primary Pollutant Banner -->
+        <div class="p-3.5 rounded-2xl bg-white/70 border border-slate-200/80 flex items-center space-x-3 text-xs shadow-2xs">
+          <div class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center font-bold shrink-0">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </div>
+          <div class="flex-1">
+            <span class="font-extrabold text-slate-800" id="primary-pollutant-title">Primary Pollutant: PM2.5 (Fine Soot Particles)</span>
+            <p class="text-[11px] text-slate-500" id="primary-pollutant-desc">Fine particles can penetrate deep into pulmonary pathways.</p>
+          </div>
         </div>
+      </div>
+
+      <!-- Right Glass Card: Health & Activity Guidance -->
+      <div class="lg:col-span-5 glass-card p-6 sm:p-8 flex flex-col justify-between space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100/80 pb-3">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center">
+              <i data-lucide="shield-alert" class="w-4 h-4"></i>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900">Health & Activity Guidance</h4>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400 uppercase font-semibold">WHO Standard</span>
+        </div>
+
+        <!-- 4 Activity Guidance Cards -->
+        <div class="grid grid-cols-2 gap-3">
+          <div id="badge-outdoor" class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 flex items-center space-x-3 shadow-2xs">
+            <i data-lucide="bike" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+            <div>
+              <span class="font-extrabold block text-xs text-slate-800">Outdoor Sports</span>
+              <span class="text-[10px] text-emerald-600 font-bold" id="badge-outdoor-text">Safe & Great</span>
+            </div>
+          </div>
+
+          <div id="badge-windows" class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 flex items-center space-x-3 shadow-2xs">
+            <i data-lucide="door-open" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+            <div>
+              <span class="font-extrabold block text-xs text-slate-800">Fresh Ventilation</span>
+              <span class="text-[10px] text-emerald-600 font-bold" id="badge-windows-text">Open Windows</span>
+            </div>
+          </div>
+
+          <div id="badge-mask" class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 flex items-center space-x-3 shadow-2xs">
+            <i data-lucide="shield" class="w-5 h-5 text-slate-400 shrink-0"></i>
+            <div>
+              <span class="font-extrabold block text-xs text-slate-800">Face Mask</span>
+              <span class="text-[10px] text-slate-500 font-bold" id="badge-mask-text">Not Required</span>
+            </div>
+          </div>
+
+          <div id="badge-purifier" class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 flex items-center space-x-3 shadow-2xs">
+            <i data-lucide="fan" class="w-5 h-5 text-slate-400 shrink-0"></i>
+            <div>
+              <span class="font-extrabold block text-xs text-slate-800">Air Purifier</span>
+              <span class="text-[10px] text-slate-500 font-bold" id="badge-purifier-text">Idle / Off</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-50/70 border border-slate-100 text-[11px] text-slate-500 flex items-center space-x-2">
+          <i data-lucide="info" class="w-4 h-4 text-slate-400 shrink-0"></i>
+          <span>Recommendations automatically adjust in real time based on satellite pollutant levels.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 6 CHEMICAL SPECIES FROSTED GLASS STRIP -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+      <div class="glass-card p-4 text-center">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">PM2.5</p>
+        <p class="text-xl font-black text-slate-900 mt-1"><span id="pill-pm25">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
+        <span class="text-[10px] text-slate-400">Fine Particulates</span>
+      </div>
+      <div class="glass-card p-4 text-center">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">PM10</p>
+        <p class="text-xl font-black text-slate-900 mt-1"><span id="pill-pm10">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
+        <span class="text-[10px] text-slate-400">Coarse Dust</span>
+      </div>
+      <div class="glass-card p-4 text-center">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">NO₂</p>
+        <p class="text-xl font-black text-slate-900 mt-1"><span id="pill-no2">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
+        <span class="text-[10px] text-slate-400">Nitrogen Dioxide</span>
+      </div>
+      <div class="glass-card p-4 text-center">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">SO₂</p>
+        <p class="text-xl font-black text-slate-900 mt-1"><span id="pill-so2">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
+        <span class="text-[10px] text-slate-400">Sulphur Dioxide</span>
+      </div>
+      <div class="glass-card p-4 text-center">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">CO</p>
+        <p class="text-xl font-black text-slate-900 mt-1"><span id="pill-co">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
+        <span class="text-[10px] text-slate-400">Carbon Monoxide</span>
+      </div>
+      <div class="glass-card p-4 text-center">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Ozone (O₃)</p>
+        <p class="text-xl font-black text-slate-900 mt-1"><span id="pill-o3">--</span> <span class="text-[10px] font-normal text-slate-400">µg/m³</span></p>
+        <span class="text-[10px] text-slate-400">Ground Smog</span>
       </div>
     </div>
 
-    <!-- 24-HOUR & 3-DAY PREDICTIVE TRAJECTORY -->
-    <div class="glass-card p-6 space-y-4">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+    <!-- 72-HOUR TRAJECTORY FROSTED GLASS CHART -->
+    <div class="glass-card p-6 sm:p-8 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div class="flex items-center space-x-2">
             <h3 class="font-extrabold text-slate-900 text-base tracking-tight">Predicted 72-Hour AQI Trajectory</h3>
-            <span class="text-[10px] font-bold uppercase tracking-wider bg-sky-50 text-sky-700 px-2 py-0.5 rounded border border-sky-200">Temporal ML</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-700 px-2 py-0.5 rounded-full border border-sky-500/20">Temporal ML</span>
           </div>
-          <p class="text-xs text-slate-500">Historical observed trajectory blended seamlessly with hourly predictive forecast projections.</p>
+          <p class="text-xs text-slate-500">Continuous hourly observed measurements followed by 48-hour forward projections.</p>
         </div>
         
-        <div class="flex items-center space-x-4 text-xs font-medium">
+        <div class="flex items-center space-x-4 text-xs font-semibold">
           <div class="flex items-center space-x-1.5">
             <span class="w-3 h-3 rounded-full bg-sky-600 inline-block shadow-2xs"></span>
-            <span class="text-slate-700">Past 24 Hours</span>
+            <span class="text-slate-700">Observed History (24h)</span>
           </div>
           <div class="flex items-center space-x-1.5">
             <span class="w-3 h-3 rounded-full bg-amber-500 inline-block shadow-2xs"></span>
-            <span class="text-slate-700">Upcoming 48h Forecast</span>
+            <span class="text-slate-700">Projected Forecast (48h)</span>
           </div>
         </div>
       </div>
@@ -284,12 +353,12 @@
       <div class="lg:col-span-5 glass-card p-6 space-y-4">
         <div class="flex justify-between items-center">
           <div>
-            <h3 class="font-extrabold text-slate-900 text-sm tracking-tight">Live Metropolitan Leaderboard</h3>
-            <p class="text-[11px] text-slate-400">Click any city to switch view</p>
+            <h3 class="font-extrabold text-slate-900 text-sm tracking-tight">Live Metropolitan Air Rankings</h3>
+            <p class="text-[11px] text-slate-400">Click any location to switch observation</p>
           </div>
-          <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Ranked Severity</span>
+          <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Ranked</span>
         </div>
-        <div id="consumer-city-leaderboard" class="space-y-2 max-h-80 overflow-y-auto pr-1">
+        <div id="consumer-city-leaderboard" class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
           <!-- Dynamically populated -->
         </div>
       </div>
@@ -299,56 +368,53 @@
         <div class="flex items-center justify-between">
           <div>
             <div class="flex items-center space-x-2">
-              <h3 class="font-extrabold text-slate-900 text-sm tracking-tight">🧪 Interactive What-If Prediction Simulator</h3>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">Decision Tree</span>
+              <h3 class="font-extrabold text-slate-900 text-sm tracking-tight">🧪 Interactive What-If Pollution Simulator</h3>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">Decision Tree AI</span>
             </div>
-            <p class="text-xs text-slate-500">Drag sliders to test how spikes in vehicular traffic or road dust trigger higher health tiers:</p>
+            <p class="text-xs text-slate-500">Adjust chemical sliders to test how changes in traffic or dust shift the classification:</p>
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
-          <!-- Slider 1 -->
-          <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
-            <div class="flex justify-between text-xs font-semibold text-slate-700">
-              <span>Traffic & Soot (PM2.5):</span>
-              <strong id="c-sim-pm25-val" class="text-sky-600 font-bold">45</strong>
+          <div class="space-y-1.5 bg-white/60 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
+            <div class="flex justify-between text-xs font-bold text-slate-700">
+              <span>Traffic Exhaust (PM2.5):</span>
+              <strong id="c-sim-pm25-val" class="text-sky-600">45</strong>
             </div>
             <input type="range" id="c-sim-pm25" min="5" max="250" value="45" oninput="onConsumerSimulatorChange()" class="w-full accent-sky-600">
-            <span class="text-[10px] text-slate-400">Normal urban: 15–60</span>
+            <span class="text-[10px] text-slate-400 font-medium">Fine soot & smoke</span>
           </div>
 
-          <!-- Slider 2 -->
-          <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
-            <div class="flex justify-between text-xs font-semibold text-slate-700">
-              <span>Dust & Grinding (PM10):</span>
-              <strong id="c-sim-pm10-val" class="text-sky-600 font-bold">85</strong>
+          <div class="space-y-1.5 bg-white/60 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
+            <div class="flex justify-between text-xs font-bold text-slate-700">
+              <span>Roadway Dust (PM10):</span>
+              <strong id="c-sim-pm10-val" class="text-sky-600">85</strong>
             </div>
             <input type="range" id="c-sim-pm10" min="10" max="400" value="85" oninput="onConsumerSimulatorChange()" class="w-full accent-sky-600">
-            <span class="text-[10px] text-slate-400">Normal urban: 40–120</span>
+            <span class="text-[10px] text-slate-400 font-medium">Mechanical dust</span>
           </div>
 
-          <!-- Slider 3 -->
-          <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
-            <div class="flex justify-between text-xs font-semibold text-slate-700">
-              <span>Nitrogen Dioxide (NO₂):</span>
-              <strong id="c-sim-no2-val" class="text-sky-600 font-bold">35</strong>
+          <div class="space-y-1.5 bg-white/60 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
+            <div class="flex justify-between text-xs font-bold text-slate-700">
+              <span>Combustion (NO₂):</span>
+              <strong id="c-sim-no2-val" class="text-sky-600">35</strong>
             </div>
             <input type="range" id="c-sim-no2" min="5" max="150" value="35" oninput="onConsumerSimulatorChange()" class="w-full accent-sky-600">
-            <span class="text-[10px] text-slate-400">Traffic exhaust indicator</span>
+            <span class="text-[10px] text-slate-400 font-medium">Vehicle emission gas</span>
           </div>
         </div>
 
         <!-- Predicted Simulator Verdict Card -->
-        <div class="p-4 rounded-xl border flex items-center justify-between transition-all duration-300" id="c-sim-result-box" style="background-color: #f0fdf4; border-color: #bbf7d0;">
+        <div class="p-4 rounded-2xl border flex items-center justify-between transition-all duration-300 shadow-2xs" id="c-sim-result-box" style="background-color: #f0fdf4; border-color: #bbf7d0;">
           <div class="space-y-0.5">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Model-Inferred Health Classification</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">AI Model-Inferred Health Classification</span>
             <div class="flex items-center space-x-2">
-              <h4 class="text-2xl font-black text-emerald-700" id="c-sim-result-tier">Good Air</h4>
+              <h4 class="text-2xl font-black text-emerald-700" id="c-sim-result-tier">Good Air Quality</h4>
               <span class="text-xs text-slate-500 font-medium" id="c-sim-result-probs">Class Confidence: 94.2%</span>
             </div>
             <p class="text-xs text-slate-600 font-medium" id="c-sim-result-desc">Safe for all population groups.</p>
           </div>
-          <div class="w-12 h-12 rounded-xl bg-white/80 shadow-2xs flex items-center justify-center shrink-0">
+          <div class="w-12 h-12 rounded-2xl bg-white/90 shadow-2xs flex items-center justify-center shrink-0">
             <i data-lucide="sparkles" class="w-6 h-6 text-emerald-600"></i>
           </div>
         </div>
@@ -364,14 +430,14 @@
   <div id="mode-dev-container" class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col md:flex-row gap-6 hidden tab-content">
     
     <!-- Dev Sidebar Navigation -->
-    <aside class="w-full md:w-64 bg-slate-900 text-slate-300 rounded-2xl p-4 flex flex-col justify-between shrink-0 shadow-lg border border-slate-800">
+    <aside class="w-full md:w-64 bg-slate-900 text-slate-300 rounded-3xl p-5 flex flex-col justify-between shrink-0 shadow-xl border border-slate-800">
       <div class="space-y-4">
         <div class="border-b border-slate-800 pb-3">
           <span class="text-[10px] font-bold uppercase tracking-wider text-purple-400">Academic Studio</span>
-          <h3 class="text-sm font-extrabold text-white">Data Mining Algorithms</h3>
+          <h3 class="text-sm font-black text-white">Data Mining Algorithms</h3>
         </div>
 
-        <nav class="space-y-1 text-xs">
+        <nav class="space-y-1.5 text-xs">
           <button onclick="switchDevTab('dev-overview')" id="dev-tab-btn-dev-overview" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800 text-left font-semibold active bg-slate-800 text-white transition-all">
             <i data-lucide="database" class="w-4 h-4 text-sky-400"></i>
             <span>System Telemetry</span>
@@ -404,7 +470,7 @@
       </div>
 
       <!-- Viva Examiner Defense Tip Card -->
-      <div class="p-3.5 bg-slate-800/90 rounded-xl border border-slate-700 text-[11px] space-y-1.5 mt-4">
+      <div class="p-3.5 bg-slate-800/90 rounded-2xl border border-slate-700 text-[11px] space-y-1.5 mt-4">
         <p class="font-bold text-amber-300 flex items-center space-x-1">
           <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
           <span>Examiner Viva Tip</span>
@@ -554,20 +620,20 @@
             <i data-lucide="file-text" class="w-4 h-4"></i><span>Compile Defense Report</span>
           </button>
         </div>
-        <textarea id="dev-report-output" readonly rows="12" class="w-full p-4 bg-slate-900 text-slate-100 rounded-xl font-mono-code text-xs focus:outline-none shadow-inner" placeholder="Click 'Compile Defense Report' to generate formal documentation..."></textarea>
+        <textarea id="dev-report-output" readonly rows="12" class="w-full p-4 bg-slate-900 text-slate-100 rounded-2xl font-mono-code text-xs focus:outline-none shadow-inner" placeholder="Click 'Compile Defense Report' to generate formal documentation..."></textarea>
       </div>
 
     </div>
   </div>
 
   <!-- Footer -->
-  <footer class="border-t border-slate-200/80 bg-white/50 backdrop-blur-xs py-4 mt-auto">
+  <footer class="border-t border-slate-200/80 bg-white/50 backdrop-blur-md py-4 mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
       <p>© 2026 AirInsight Environmental Intelligence System. Built with FastAPI, Scikit-learn & Open-Meteo.</p>
       <div class="flex items-center space-x-4">
-        <a href="/docs" target="_blank" class="hover:text-sky-600 font-medium">REST API (Swagger)</a>
+        <a href="/docs" target="_blank" class="hover:text-sky-600 font-semibold">REST API (Swagger)</a>
         <span>•</span>
-        <a href="/api/export/cleaned-csv" class="hover:text-emerald-600 font-medium">Dataset CSV</a>
+        <a href="/api/export/cleaned-csv" class="hover:text-emerald-600 font-semibold">Dataset CSV</a>
       </div>
     </div>
   </footer>
