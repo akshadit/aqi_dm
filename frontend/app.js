@@ -1,10 +1,8 @@
 /**
- * AirInsight Ultra-Premium Frontend Controller
- * Features:
- * - Living Cloud Drift & Atmospheric Stage Control (Inspired by Alto Volcán de Agua)
- * - Dynamic Vertical Atmospheric Ruler Scale with Real-Time Needle Positioning
- * - Ambient Sky Tone Transitions Based on Measured Air Quality
- * - Frosted Glassmorphism Micro-Interactions & Dual-Mode Architecture
+ * AirInsight Premium Frontend Controller
+ * Implements SVG Radial Gauge Meter, Dynamic Ambient Lighting,
+ * Dual-Mode (Consumer Experience + Dev / Viva Lab Studio),
+ * and Chart.js / Plotly.js Visualizations.
  */
 
 const API_BASE = "";
@@ -29,17 +27,17 @@ async function initApp() {
 }
 
 // -------------------------------------------------------------
-// TOAST NOTIFICATIONS
+// TOAST NOTIFICATION UTILITY
 // -------------------------------------------------------------
 function showToast(message, type = "info") {
   const container = document.getElementById("toast-container");
   if (!container) return;
 
   const toast = document.createElement("div");
-  const bgClass = type === "success" ? "bg-emerald-600/90" : type === "error" ? "bg-rose-600/90" : "bg-slate-900/90";
-  toast.className = `${bgClass} backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold flex items-center space-x-2.5 transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto border border-white/20`;
+  const bgClass = type === "success" ? "bg-emerald-600" : type === "error" ? "bg-rose-600" : "bg-slate-900";
+  toast.className = `${bgClass} text-white px-4 py-3 rounded-xl shadow-lg text-xs font-semibold flex items-center space-x-2 transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto`;
   toast.innerHTML = `
-    <i data-lucide="${type === 'success' ? 'check-circle-2' : type === 'error' ? 'alert-triangle' : 'sparkles'}" class="w-4 h-4"></i>
+    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info'}" class="w-4 h-4"></i>
     <span>${message}</span>
   `;
   container.appendChild(toast);
@@ -53,12 +51,12 @@ function showToast(message, type = "info") {
   // Auto remove
   setTimeout(() => {
     toast.classList.add("translate-y-4", "opacity-0");
-    setTimeout(() => toast.remove(), 350);
+    setTimeout(() => toast.remove(), 300);
   }, 3500);
 }
 
 // -------------------------------------------------------------
-// APP MODE SWITCHER (ATMOSPHERE VIEW vs DEV VIVA STUDIO)
+// APP MODE SWITCHER (CONSUMER VIEW vs DEV / VIVA MODE)
 // -------------------------------------------------------------
 function setAppMode(mode) {
   currentAppMode = mode;
@@ -71,8 +69,8 @@ function setAppMode(mode) {
     consumerContainer.classList.remove("hidden");
     devContainer.classList.add("hidden");
 
-    btnConsumer.className = "flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition-all";
-    btnDev.className = "flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all";
+    btnConsumer.className = "flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-2xs transition-all";
+    btnDev.className = "flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all";
 
     loadOverview();
     renderConsumerTrajectory();
@@ -80,11 +78,11 @@ function setAppMode(mode) {
     consumerContainer.classList.add("hidden");
     devContainer.classList.remove("hidden");
 
-    btnDev.className = "flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-purple-900 shadow-2xs transition-all";
-    btnConsumer.className = "flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all";
+    btnDev.className = "flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-purple-900 shadow-2xs transition-all";
+    btnConsumer.className = "flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all";
 
     switchDevTab("dev-overview");
-    showToast("Opened Academic Viva Data Mining Studio", "info");
+    showToast("Entered Academic Viva Studio mode", "info");
   }
 
   if (window.lucide) lucide.createIcons();
@@ -142,21 +140,22 @@ function onCityChange() {
   renderConsumerTrajectory();
 }
 
-// Quick City Pills Handler
+// Quick City Pills Click Handler
 function selectQuickCity(cityName) {
   const match = currentCities.find(c => c.city_name.toLowerCase() === cityName.toLowerCase());
   if (match) {
     activeCityId = match.id;
     document.getElementById("city-selector").value = match.id;
     onCityChange();
-    showToast(`Switched view to ${match.city_name}`, "info");
+    showToast(`Switched to ${match.city_name}`, "info");
   } else {
+    // Search geocoding dynamically
     document.getElementById("quick-city-search").value = cityName;
     handleSearchEnter();
   }
 }
 
-// Enter on quick search input
+// Handles pressing enter on quick search input
 async function handleSearchEnter() {
   const input = document.getElementById("quick-city-search");
   const query = input.value.trim();
@@ -172,7 +171,7 @@ async function handleSearchEnter() {
     return;
   }
 
-  // Query Geocoding
+  // Otherwise query Open-Meteo Geocoding
   input.disabled = true;
   input.placeholder = "Resolving coordinates via Geocoding...";
   try {
@@ -190,7 +189,7 @@ async function handleSearchEnter() {
       activeCityId = added.city_id;
       document.getElementById("city-selector").value = added.city_id;
       onCityChange();
-      showToast(`Discovered "${cand.name}, ${cand.country}"! Fetching live telemetry...`, "success");
+      showToast(`Discovered & registered "${cand.name}"! Fetching live telemetry...`, "success");
       triggerIngestCurrentCity();
     } else {
       showToast(`Could not resolve coordinates for "${query}".`, "error");
@@ -205,7 +204,7 @@ async function handleSearchEnter() {
 }
 
 // -------------------------------------------------------------
-// 2. ATMOSPHERIC SCENIC HERO & VERTICAL RULER SCALE
+// 2. CONSUMER MODE (RADIAL GAUGE & HEALTH VERDICTS)
 // -------------------------------------------------------------
 
 async function loadOverview() {
@@ -217,45 +216,33 @@ async function loadOverview() {
     if (latestOverviewData.length === 0) return;
 
     const active = latestOverviewData.find(c => c.city_id === activeCityId) || latestOverviewData[0];
-    const cityInfo = currentCities.find(c => c.id === active.city_id) || {};
 
-    // 1. Update Atmospheric Stage & Cloud Backdrop Colors based on AQI
-    updateAtmosphericSkyColor(active.us_aqi);
-
-    // 2. Update Editorial Hero Typography
-    const titleEl = document.getElementById("hero-city-name-display");
-    if (titleEl) {
-      titleEl.innerText = active.city_name;
-    }
-    const countryEl = document.getElementById("hero-state-country");
-    if (countryEl) {
-      countryEl.innerText = `${cityInfo.country || "INDIA"} • MONITORED ATMOSPHERE`;
-    }
-
-    // 3. Update Vertical Atmospheric Scale (Alto Style)
-    updateVerticalScale(active, cityInfo);
-
-    // 4. Update Radial SVG Gauge & Hero Numbers
-    document.getElementById("hero-timestamp").innerText = `Live Satellite UTC: ${active.timestamp.replace("T", " ")}`;
+    // Populate Hero Consumer Card
+    document.getElementById("hero-city-name").innerText = `${active.city_name}`;
+    document.getElementById("hero-timestamp").innerText = `Live: ${active.timestamp.replace("T", " ")} UTC`;
     document.getElementById("hero-aqi-val").innerText = Math.round(active.us_aqi);
+
+    // Update Radial SVG Gauge Meter
     updateRadialGauge(active.us_aqi, active.color);
 
-    // 5. Tier Pill & Headline
+    // Update Tier Badge
     const tierBadge = document.getElementById("hero-tier-badge");
     document.getElementById("hero-tier-text").innerText = active.tier;
+    tierBadge.style.backgroundColor = `${active.color}15`;
     tierBadge.style.color = active.color;
     tierBadge.style.borderColor = `${active.color}40`;
 
+    // Consumer Headline & Advisory
     const adv = getConsumerAdvisory(active.tier);
     document.getElementById("hero-headline").innerText = adv.headline;
     document.getElementById("hero-short-summary").innerText = adv.summary;
     document.getElementById("hero-advisory-text").innerText = adv.text;
     updateActivityBadges(adv);
 
-    // 6. Primary Pollutant Callout
+    // Primary Pollutant Context
     updatePrimaryPollutantCallout(active);
 
-    // 7. Chemical Pollutants Strip
+    // Pollutant Chemical Strips
     document.getElementById("pill-pm25").innerText = active.pm2_5;
     document.getElementById("pill-pm10").innerText = active.pm10;
     document.getElementById("pill-no2").innerText = active.no2;
@@ -263,8 +250,10 @@ async function loadOverview() {
     document.getElementById("pill-co").innerText = active.co;
     document.getElementById("pill-o3").innerText = active.o3;
 
-    // 8. Leaderboard & Dev Chart
+    // Consumer Leaderboard
     renderConsumerLeaderboard(latestOverviewData);
+
+    // Dev Overview Chart
     if (document.getElementById("chart-dev-comparison")) {
       renderDevComparisonChart(latestOverviewData);
     }
@@ -273,64 +262,10 @@ async function loadOverview() {
   }
 }
 
-// Dynamic Sky Backdrop Adaptation
-function updateAtmosphericSkyColor(aqi) {
-  const root = document.documentElement;
-  if (aqi <= 50) {
-    // Crisp clean mountain sky (Like Alto Volcán morning)
-    root.style.setProperty("--sky-top", "#8fb9d4");
-    root.style.setProperty("--sky-mid", "#c4dbe8");
-    root.style.setProperty("--sky-bottom", "#e8edf2");
-  } else if (aqi <= 100) {
-    // Warm morning golden sky
-    root.style.setProperty("--sky-top", "#9bbcc9");
-    root.style.setProperty("--sky-mid", "#d6cbbe");
-    root.style.setProperty("--sky-bottom", "#edeae4");
-  } else if (aqi <= 150) {
-    // Hazy amber / warm dusk
-    root.style.setProperty("--sky-top", "#a89689");
-    root.style.setProperty("--sky-mid", "#d4af94");
-    root.style.setProperty("--sky-bottom", "#ede0d4");
-  } else if (aqi <= 200) {
-    // Smoggy dusky terracotta
-    root.style.setProperty("--sky-top", "#8f6e69");
-    root.style.setProperty("--sky-mid", "#be8d84");
-    root.style.setProperty("--sky-bottom", "#dbc3be");
-  } else {
-    // Twilight smog emergency
-    root.style.setProperty("--sky-top", "#504b5e");
-    root.style.setProperty("--sky-mid", "#826b7c");
-    root.style.setProperty("--sky-bottom", "#ad97a6");
-  }
-}
-
-// Updates Vertical Atmospheric Scale Ruler (Alto Style)
-function updateVerticalScale(active, cityInfo) {
-  const scaleAqiEl = document.getElementById("scale-current-aqi");
-  const scaleCityEl = document.getElementById("scale-city-name");
-  const scaleCoordsEl = document.getElementById("scale-coords");
-  const needleEl = document.getElementById("scale-needle");
-
-  if (scaleAqiEl) scaleAqiEl.innerText = `${Math.round(active.us_aqi)} AQI`;
-  if (scaleCityEl) scaleCityEl.innerText = active.city_name.toUpperCase();
-  if (scaleCoordsEl && cityInfo.latitude) {
-    scaleCoordsEl.innerText = `${Math.abs(cityInfo.latitude).toFixed(2)}° ${cityInfo.latitude >= 0 ? "N" : "S"}  ${Math.abs(cityInfo.longitude).toFixed(2)}° ${cityInfo.longitude >= 0 ? "E" : "W"}`;
-  }
-
-  if (needleEl) {
-    // Calculate needle vertical position (0 to 100%)
-    // Top is 500 (0%), Bottom is 0 (100%)
-    const clampedAQI = Math.min(Math.max(active.us_aqi, 0), 500);
-    const topPct = (1.0 - (clampedAQI / 500.0)) * 100.0;
-    needleEl.style.top = `${topPct}%`;
-    needleEl.style.backgroundColor = active.color;
-    needleEl.style.boxShadow = `0 0 0 4px ${active.color}35`;
-  }
-}
-
-// Radial SVG Gauge Meter
+// Animates SVG Radial Gauge Meter & Ambient Glow
 function updateRadialGauge(aqi, color) {
   const circle = document.getElementById("gauge-circle-progress");
+  const ambientGlow = document.getElementById("hero-ambient-glow");
   if (!circle) return;
 
   const circumference = 251.2; // 2 * pi * 40
@@ -340,6 +275,11 @@ function updateRadialGauge(aqi, color) {
 
   circle.style.strokeDashoffset = offset;
   circle.style.stroke = color;
+
+  // Set ambient glow
+  if (ambientGlow) {
+    ambientGlow.style.setProperty("--glow-color", `${color}35`);
+  }
 }
 
 function updatePrimaryPollutantCallout(cityData) {
@@ -348,17 +288,17 @@ function updatePrimaryPollutantCallout(cityData) {
   if (!titleEl || !descEl) return;
 
   if (cityData.pm2_5 > 35) {
-    titleEl.innerText = `Primary Pollutant: PM2.5 (${cityData.pm2_5} µg/m³ — Fine Combustion Soot)`;
-    descEl.innerText = "Fine inhalable particles that penetrate deep into pulmonary pathways and cardiovascular systems.";
+    titleEl.innerText = `Primary Pollutant: PM2.5 (${cityData.pm2_5} µg/m³ — Fine Particles)`;
+    descEl.innerText = "Fine soot particles penetrate deep into alveoli and enter the bloodstream.";
   } else if (cityData.pm10 > 75) {
-    titleEl.innerText = `Primary Pollutant: PM10 (${cityData.pm10} µg/m³ — Coarse Roadway Dust)`;
-    descEl.innerText = "Coarse dust and mechanical grinding particles causing respiratory and throat irritation.";
+    titleEl.innerText = `Primary Pollutant: PM10 (${cityData.pm10} µg/m³ — Coarse Dust)`;
+    descEl.innerText = "Coarse roadway dust and mechanical debris causing throat and respiratory irritation.";
   } else if (cityData.no2 > 40) {
-    titleEl.innerText = `Primary Pollutant: NO₂ (${cityData.no2} µg/m³ — Vehicular Combustion)`;
-    descEl.innerText = "Combustion byproduct from diesel and petrol engines causing acute airway inflammation.";
+    titleEl.innerText = `Primary Pollutant: NO₂ (${cityData.no2} µg/m³ — Traffic Exhaust)`;
+    descEl.innerText = "Combustion gas from motor vehicles triggering airway inflammation.";
   } else {
-    titleEl.innerText = "Pollutant Species Within Standard WHO Benchmark Limits";
-    descEl.innerText = "All measured particulate and gaseous concentrations are currently in favorable ranges.";
+    titleEl.innerText = "Atmospheric Pollutants Within Standard WHO Benchmark Limits";
+    descEl.innerText = "All measured particulate and gaseous species are currently in favorable ranges.";
   }
 }
 
@@ -368,7 +308,7 @@ function getConsumerAdvisory(tier) {
       return {
         headline: "Crisp & Clean Ambient Air",
         summary: "Pollution levels pose zero health concern for all population groups.",
-        text: "Air quality is ideal. Enjoy outdoor sports, jogging, cycling, and keep windows open for natural ventilation.",
+        text: "Air quality is ideal. Enjoy outdoor sports, jogging, cycling, and keep windows open for natural airflow.",
         outdoor: true, windows: true, mask: false, purifier: false
       };
     case "Moderate":
@@ -416,20 +356,20 @@ function updateActivityBadges(adv) {
     const textEl = document.getElementById(textId);
     if (!el || !textEl) return;
     if (allowed) {
-      el.className = "p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 flex items-center space-x-3 shadow-2xs";
+      el.className = "p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-100 flex items-center space-x-2.5";
       textEl.innerText = allowedText;
-      textEl.className = "text-[10px] text-emerald-600 font-bold";
+      textEl.className = "text-[10px] text-emerald-600 font-semibold";
     } else {
-      el.className = "p-3.5 rounded-2xl bg-rose-50/90 border border-rose-200/80 flex items-center space-x-3 shadow-2xs";
+      el.className = "p-3 rounded-xl bg-rose-50 text-rose-800 border border-rose-100 flex items-center space-x-2.5";
       textEl.innerText = blockedText;
-      textEl.className = "text-[10px] text-rose-600 font-bold";
+      textEl.className = "text-[10px] text-rose-600 font-semibold";
     }
   };
 
-  setBadge("badge-outdoor", "badge-outdoor-text", adv.outdoor, "Safe & Great", "Avoid Jogging");
-  setBadge("badge-windows", "badge-windows-text", adv.windows, "Open Windows", "Keep Windows Closed");
-  setBadge("badge-mask", "badge-mask-text", !adv.mask, "Not Required", "N95 Mask Advised");
-  setBadge("badge-purifier", "badge-purifier-text", !adv.purifier, "Idle / Off", "Run HEPA Purifier");
+  setBadge("badge-outdoor", "badge-outdoor-text", adv.outdoor, "Safe & Recommended", "Avoid Heavy Jogging");
+  setBadge("badge-windows", "badge-windows-text", adv.windows, "Open for Airflow", "Keep Windows Closed");
+  setBadge("badge-mask", "badge-mask-text", !adv.mask, "Not Needed", "N95 Mask Advised");
+  setBadge("badge-purifier", "badge-purifier-text", !adv.purifier, "Can Remain Idle", "Run Air Purifier");
 }
 
 function renderConsumerLeaderboard(cities) {
@@ -440,8 +380,8 @@ function renderConsumerLeaderboard(cities) {
   cities.forEach((c, idx) => {
     const isSelected = c.city_id === activeCityId;
     const item = document.createElement("div");
-    item.className = `p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
-      isSelected ? "bg-white/95 border-sky-400 shadow-md transform scale-[1.02]" : "bg-white/70 border-slate-200/70 hover:bg-white hover:border-slate-300"
+    item.className = `p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+      isSelected ? "bg-sky-50/80 border-sky-300 shadow-xs" : "bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200"
     }`;
     item.onclick = () => {
       activeCityId = c.city_id;
@@ -452,16 +392,16 @@ function renderConsumerLeaderboard(cities) {
 
     item.innerHTML = `
       <div class="flex items-center space-x-3">
-        <span class="w-5 text-center text-xs font-black text-slate-400 font-mono">#${idx + 1}</span>
-        <span class="w-3 h-3 rounded-full shadow-2xs" style="background-color: ${c.color}"></span>
+        <span class="w-5 text-center text-xs font-bold text-slate-400">#${idx + 1}</span>
+        <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${c.color}"></span>
         <div>
-          <h4 class="font-extrabold text-slate-900 text-xs">${c.city_name}</h4>
-          <span class="text-[10px] text-slate-400 font-medium font-mono">PM2.5: ${c.pm2_5} µg/m³</span>
+          <h4 class="font-extrabold text-slate-800 text-xs">${c.city_name}</h4>
+          <span class="text-[10px] text-slate-400 font-medium">PM2.5: ${c.pm2_5} µg/m³</span>
         </div>
       </div>
       <div class="text-right">
         <span class="font-black text-sm" style="color: ${c.color}">${Math.round(c.us_aqi)}</span>
-        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${c.tier}</p>
+        <p class="text-[10px] font-semibold text-slate-400">${c.tier}</p>
       </div>
     `;
     container.appendChild(item);
@@ -482,8 +422,8 @@ async function renderConsumerTrajectory() {
       currentChartInstances["consumerTrajectory"].destroy();
     }
 
-    const obs = data.observed.slice(-24);
-    const fc = data.forecast.slice(0, 48);
+    const obs = data.observed.slice(-24); // Last 24 hours
+    const fc = data.forecast.slice(0, 48); // Next 48 hours
 
     const labels = [
       ...obs.map(d => d.time.slice(5, 16).replace("T", " ")),
@@ -492,9 +432,9 @@ async function renderConsumerTrajectory() {
     const obsVals = [...obs.map(d => d.value), ...Array(fc.length).fill(null)];
     const fcVals = [...Array(obs.length).fill(null), ...fc.map(d => d.value)];
 
-    // Gradient fill
+    // Create subtle gradient fill
     const gradient = ctx.createLinearGradient(0, 0, 0, 240);
-    gradient.addColorStop(0, "rgba(2, 132, 199, 0.25)");
+    gradient.addColorStop(0, "rgba(2, 132, 199, 0.2)");
     gradient.addColorStop(1, "rgba(2, 132, 199, 0.0)");
 
     currentChartInstances["consumerTrajectory"] = new Chart(ctx, {
@@ -508,12 +448,12 @@ async function renderConsumerTrajectory() {
             borderColor: "#0284c7",
             backgroundColor: gradient,
             fill: true,
-            borderWidth: 3,
+            borderWidth: 2.5,
             tension: 0.35,
             pointRadius: 0
           },
           {
-            label: "Forecast Horizon",
+            label: "Forecast Trajectory",
             data: fcVals,
             borderColor: "#f59e0b",
             borderDash: [5, 5],
@@ -531,8 +471,8 @@ async function renderConsumerTrajectory() {
           legend: { display: false }
         },
         scales: {
-          x: { ticks: { maxTicksLimit: 10, font: { size: 10, family: "JetBrains Mono" } }, grid: { display: false } },
-          y: { grid: { color: "rgba(241, 245, 249, 0.8)" }, ticks: { font: { size: 10, family: "JetBrains Mono" } } }
+          x: { ticks: { maxTicksLimit: 10, font: { size: 10 } }, grid: { display: false } },
+          y: { grid: { color: "#f8fafc" }, ticks: { font: { size: 10 } } }
         }
       }
     });
@@ -541,7 +481,7 @@ async function renderConsumerTrajectory() {
   }
 }
 
-// Interactive What-If Simulator
+// Interactive Consumer Simulator
 async function onConsumerSimulatorChange() {
   const pm25 = parseFloat(document.getElementById("c-sim-pm25").value);
   const pm10 = parseFloat(document.getElementById("c-sim-pm10").value);
@@ -567,9 +507,10 @@ async function onConsumerSimulatorChange() {
     descEl.innerText = getConsumerAdvisory(pred.predicted_category).summary;
 
     const box = document.getElementById("c-sim-result-box");
-    box.style.borderColor = `${pred.color}50`;
-    box.style.backgroundColor = `${pred.color}15`;
+    box.style.borderColor = `${pred.color}40`;
+    box.style.backgroundColor = `${pred.color}10`;
 
+    // Probability string
     const probs = Object.entries(pred.probabilities).filter(([_, v]) => v > 0).map(([k, v]) => `${k}: ${v}%`).join(" | ");
     document.getElementById("c-sim-result-probs").innerText = probs ? `Confidence: ${probs}` : "";
   } catch (err) {
@@ -596,7 +537,7 @@ async function triggerIngestCurrentCity() {
 }
 
 // -------------------------------------------------------------
-// 3. DEV / VIVA MODE (ACADEMIC DATA MINING LAB)
+// 3. DEV / VIVA MODE (FULL ACADEMIC DATA MINING LAB)
 // -------------------------------------------------------------
 
 function switchDevTab(tabId) {
@@ -647,7 +588,7 @@ function renderDevComparisonChart(cities) {
         label: "US AQI Ground Truth",
         data: cities.map(c => c.us_aqi),
         backgroundColor: cities.map(c => c.color),
-        borderRadius: 8
+        borderRadius: 6
       }]
     },
     options: {
@@ -694,6 +635,7 @@ async function runKMeans() {
     });
     const data = await res.json();
 
+    // 2D PCA Plotly Scatter
     const pcaTrace = {
       x: data.pca_points.map(p => p.x),
       y: data.pca_points.map(p => p.y),
@@ -709,12 +651,13 @@ async function runKMeans() {
       plot_bgcolor: "#ffffff"
     }, { responsive: true });
 
+    // Archetypes
     const container = document.getElementById("dev-km-archetypes");
     container.innerHTML = "";
     data.cluster_summaries.forEach(c => {
       const d = document.createElement("div");
-      d.className = "p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between";
-      d.innerHTML = `<strong>Cluster ${c.cluster}: ${c.archetype}</strong> <span class="text-slate-500 font-semibold font-mono">${c.count} samples (${c.percentage}%)</span>`;
+      d.className = "p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex justify-between";
+      d.innerHTML = `<strong>Cluster ${c.cluster}: ${c.archetype}</strong> <span class="text-slate-500 font-semibold">${c.count} samples (${c.percentage}%)</span>`;
       container.appendChild(d);
     });
     showToast(`K-Means computed with k=${k}`, "success");
@@ -737,6 +680,7 @@ async function runDecisionTree() {
     document.getElementById("dev-dt-rec").innerText = `${data.recall}%`;
     document.getElementById("dev-dt-f1").innerText = `${data.f1_score}%`;
 
+    // Confusion Matrix Heatmap
     const cmTrace = {
       z: data.confusion_matrix,
       x: data.confusion_matrix_labels,
@@ -746,6 +690,7 @@ async function runDecisionTree() {
     };
     Plotly.newPlot("chart-dev-cm", [cmTrace], { margin: { l: 60, r: 20, t: 20, b: 60 } }, { responsive: true });
 
+    // Feature Importances
     const canvas = document.getElementById("chart-dev-importance");
     if (canvas) {
       const ctx = canvas.getContext("2d");
@@ -754,7 +699,7 @@ async function runDecisionTree() {
         type: "bar",
         data: {
           labels: Object.keys(data.feature_importances).map(f => f.toUpperCase()),
-          datasets: [{ data: Object.values(data.feature_importances), backgroundColor: "#0284c7", borderRadius: 6 }]
+          datasets: [{ data: Object.values(data.feature_importances), backgroundColor: "#0284c7", borderRadius: 4 }]
         },
         options: {
           indexAxis: "y",
